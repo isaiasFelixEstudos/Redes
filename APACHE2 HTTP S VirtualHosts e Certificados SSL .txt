@@ -1,0 +1,274 @@
+APACHE2 - HTTPS - NA MÁQUINA WEB
+
+sudo bash (usuario root)
+apt update (atualizar)
+
+apt install apache2 php openssl ssl-cert (apache, php e certificados)
+
+Ativar Modulos:
+dentro da pasta:
+cd /etc/apache2/mods-enabled
+a2enmod ssl
+a2enmod rewrite
+
+comando pra criar o atalho
+ls -n ../mods-avaliable/rewrite.load .
+
+
+systemctl restart apache2 
+systemctl status apache2 
+
+verificar porta 443: ss -ntpl
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+acessar o diretorio:
+cd /etc/apache2/
+alterar apache2.conf
+nano apache2.conf (comenta e descomenta)
+
+<Directory /srv/sites>
+  Options Indexes FollowSymLinks
+  AllowOverride None
+  Require all granted
+</Directory> 
+
+F2 e Y enter para salvar 
+
+---- dever apenas descomentar e inserir o sites, comentar as linhas acima desse
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Antes Verificar dento do DNS1 dentro de:
+cd /etc/bind/
+sudo nano laboratorio.db
+verificar e adicionar entrada do web e www:
+
+web	IN	A	172.16.100.4
+www	IN	CNAME	web.laboratorio.lan
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CRIAÇÃO VIRTUAL HOST WEB
+
+Cria diretortios no direretorio /srv
+cd /srv
+mkdir sites
+mkdir lab
+
+
+Criar o index.html
+nano index.html
+
+<html>
+<title>web.laboratorio.lan</title>
+<br><br><p><b>
+<center>
+<fonte size="5">
+<font color ="red">teste</font>
+</title>  ---- f2 salva
+
+F2 e Y enter para salvar 
+
+
+dentro do diretorio:
+cd /srv/sites/lab
+chown www-data.www-data index.html 
+obs: altera permissoes do index
+
+ls -la
+
+
+acessar diretorio
+cd /etc/apache2/sites-avaliable
+criando os arquivos:
+nano laboratorio.conf
+dentro do arquivo tem as informaçoes:
+
+<VirtualHost *:80>
+	ServerName	web.laboratorio.lan
+	ServerAdmin	email@laboratorio.lan
+	DocumentRoot /srv/sites
+	<Directory /srv/sites/lab/>
+		Options Indexes FollowSymLinks
+		AllowOverride	All
+		Require all granted
+	</Directory>
+	ErrorLog /var/log/apache2/erro-lab.log
+	CustomLog var/log/apache2/access-lab.log combined
+	LogLevel error
+</VirtualHost>
+
+obs: prestar antençao nos espaços que a maioria sao <tab>
+
+F2 e Y enter para salvar 
+
+Em seguida ativa:
+
+a2ensite laboratorio.conf --- ativa serviço
+systemctl restart apache2
+systemctl status apache2
+
+
+RODA NA MÁQUINA CLIENTE : web.laboratorio.lan
+
+caso nao executar na maquina para teste:
+
+
+ver erros no log:
+tail -f /var/log/apache2/error.log
+
+============================================================
+CRIAÇÃO VIRTUAL HOST WWW
+
+Dentro do diretorio Sites-Avaliable
+cd /etc/apache2/sites-avaliable
+copie o arwuivo laboratorio.conf
+
+cp laborario.conf www-laboratorio.conf
+
+Atere para as seguintes configuraçoes
+
+nano www-laboratorio.conf
+
+<VirtualHost *:80>
+	ServerName	www.laboratorio.lan
+	ServerAdmin	email@laboratorio.lan
+	DocumentRoot /srv/sites/lab-www
+	<Directory /srv/sites/lab-www>
+		Options Indexes FollowSymLinks
+		AllowOverride	All
+		Require all granted
+	</Directory>
+	ErrorLog /var/log/apache2/erro-lab.log
+	CustomLog var/log/apache2/access-lab.log combined
+	LogLevel error
+</VirtualHost>
+
+obs: prestar antençao nos espaços que a maioria sao <tab>
+
+F2 e Y enter para salvar 
+
+a2ensite laboratorio.conf --- ativa serviço
+systemctl restart apache2
+systemctl status apache2
+
+Dentro de /src/sites cria o diretorio lab-www
+cd /src/sites
+cp -R lab/ lab-www (copia a lab e recria a lab-www)
+
+se precisar edite o index.html dentro da lab-www para diferenciar as paginas
+
+
+OU
+
+cd lab-www/
+nano index.html
+
+<html>
+<title>www.laboratorio.lan</title>
+<br><br><p><b>
+<center>
+<fonte size="5">
+<font color ="blue">www.laboratorio.lan</font>
+</title>
+
+
+F2 e Y enter para salvar 
+
+systemctl restart apache2
+systemctl status apache2
+
+
+RODA NA MÁQUINA CLIENTE : www.laboratorio.lan
+
+ver erros no log:
+tail -f /var/log/apache2/access.log
+
+
+===== Criar os Certificados SSL ====
+
+Cria dentor do diretório /etc/apache2 o diretorio ssl onde ficarao as chaves ssl
+cd /etc/apache2
+mkdir ssl 
+Dentro de ssl criaremos a key
+cd /etc/apache2/ssl
+openssl genrsa -out /etc/apache2/ssl/laboratorio.key 2048
+
+Assinatura do Certificado (criar o arquivo de requisição)
+
+openssl req -new -key /etc/apache2/ssl/laboratorio.key -out /etc/apache2/ssl/laboratorio.csr
+
+O Sistema pedira as informaçoes linha a linha 
+
+ Country Name (2 letter code) [AU]:BR
+ State or Province Name (full name) [SomeState]:RO
+ Locality Name (eg, city) []:Ariquemes
+ Organization Name (eg, company) [Internet
+Widgits Pty Ltd]:IFRO
+ Organizational Unit Name (eg, section) []:ads
+ Common Name (e.g. server FQDN or YOUR name)
+[]:web.laboratorio.lan
+ Email Address []:suporte@laboratorio.lan
+ Please enter the following 'extra' attributes
+to be sent with your certificate request
+ Achallenge password []:(sem senha)
+ An optional company name []:(sem CIA)
+
+
+Assinar o certificado criado acima
+
+openssl x509 -req -days 365 -in /etc/apache2/ssl/laboratorio.csr -signkey /etc/apache2/ssl/laboratorio.key -out /etc/apache2/ssl/laboratorio.crt
+
+
+Mudando as permissoes parra somente o root acessar
+
+chmod 600 laboratorio.csr
+chmod 600 laboratorio.key
+
+===========================================================
+
+Criando VirtualHost HTTPS para acessar os certificados e o ssl a funcionar:
+
+Dentro do diretório etc/apache2/sites-available
+vamos criar o arquivo lab-ssl.conf
+
+nano lab-ssl.conf
+
+com o seguinte conteúdo:
+
+<VirtualHost *:443>
+	ServerName	web.laboratorio.lan:443
+	ServerAdmin	email@laboratorio.lan
+	DocumetRoot	/srv/sites/lab/
+	ErrorLog	/var/log/apache2/error-lab.log
+	CustomLog	/var/log/apache2/access.log common
+	SSLEngine	on
+	SSLCertificateFile	/etc/apache2/ssl/laboratorio.crt
+	SSLCertificateKeyFile	/etc/apache2/ssl/laboratorio.key
+</VirtualHost>
+<VirtualHost *:80>
+	RewriteEngine	on
+	ServerName	web.laboratorio.lan
+	Options FollowSymLinks
+	RewriteCond %{SERVER_PORT} 80
+	RewriteRule ^(.*)$ https://web.laboratorio.lan/ [R,L]
+</VirtualHost>
+
+
+obs: Verificar espaçamentos com tab e espaço:
+
+F2 e Y enter para salvar 
+
+a2ensite lab-ssl.conf
+
+systemctl restart apache2
+systemctl status apache2
+
+service apache2 restart
+service apache2 status
+
+ss -ntpl
+
+ver erros no log:
+tail -f /var/log/apache2/error.log
+
+

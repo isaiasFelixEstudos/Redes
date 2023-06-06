@@ -1,0 +1,14 @@
+No servidor WEB: 
+loga com usuario e depois com sudo bash
+
+atualiza pacotes
+apt update 
+
+instala o server apache2
+apt install apache2
+
+OBS: conferir se o web esta autorizado no DNS1 dentro do arquivo:
+cd /etc/bind/
+ls
+nano laboratorio.db (web	IN	IN	172.16.100.2)
+

@@ -1,0 +1,25 @@
+ssh aluno@172.16.100.2 ( Acessar Gateway pelo terminal)
+ssh -p 22000 aluno@192.168.56.2 ( Acessar pela porta DNS1)
+ssh -p 23000 aluno@192.168.56.2 ( Acessar pela porta DNS2)
+
+sudo bash
+
+./firewall.sh (iniciar toda vez no gateway)
+iptables -t nat -nL
+
+
+configuraçoes do name server
+sudo nano /etc/resolv.conf
+unlink resolv.conf
+ls -la resolv.conf
+ln -s /run/systemd/resolve/resolv.conf .
+
+reiniciar serviços dns
+
+systemctl restart bind9
+systemctl status bind9
+
+ping ftp laboratorio.lan
+
+
+

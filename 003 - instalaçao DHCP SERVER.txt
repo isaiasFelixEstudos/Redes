@@ -1,0 +1,53 @@
+SSH GATEWAW -  ssh -p 51000 aluno@192.168.56.2
+SSH DNS1 -  ssh -p 52000 aluno@192.168.56.2
+SSH DNS2 -  ssh -p 53000 aluno@192.168.56.2
+===============================================================================
+AULA 24-08-2022
+
+instalaçao DHCP
+
+sudo apt update
+
+sudo apt install isc-dhcp-server -y (instalaçao do Servidor DNS)
+
+sudo dpkg --configure -a (emcaso de erro)
+sudo apt --fix-broken install (emcaso de erro)
+===============================================================================
+cd /etc/dhcp
+sudo cp dhcpd.conf /etc/dhcp/bkp-dhcpd.conf
+sudo nano dhcpd.conf (altera)
+
+(alteraçoes dentro do arquivo dhcpd.conf)
+
+# A slightly different configuration for an internal subnet.
+subnet 172.16.100.0 netmask 255.255.255.0 {
+  range 172.16.100.20 172.16.100.30;
+  option domain-name-servers 172.16.100.2, 172.16.100.3;
+  option domain-name "laboratorio.lan";
+  option subnet-mask 255.255.255.0;
+  option routers 172.16.100.1;
+  option broadcast-address 172.16.100.255;
+  default-lease-time 600;
+  max-lease-time 7200;
+}
+===============================================================================
+reinicia serviço
+systemctl restart isc-dhcp-server
+verifica
+systemctl status isc-dhcp-server
+===============================================================================
+altera o nome da rede no casso de o sistama avisar
+cd /etc/default
+sudo nano isc-dhcp-server (altera a linha para INTERFACESv4="enp0s9")
+===============================================================================
+reinicia serviço
+systemctl restart isc-dhcp-server
+verifica
+systemctl status isc-dhcp-server
+===============================================================================
+
+
+
+
+
+

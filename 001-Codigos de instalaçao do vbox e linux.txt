@@ -1,0 +1,183 @@
+NAT = local
+LAN = HostOnly = 192.168.56.2/24
+LAN2 = REDE INTERNA - laboratorio.lan = 172.16.100.1/24
+
+GW = REDE INTERNA - laboratorio.lan = 172.16.100.1/24
+DNS1 = REDE INTERNA - laboratorio.lan = 172.16.100.2/24
+DNS2 = REDE INTERNA - laboratorio.lan = 172.16.100.3/24
+WEB = REDE INTERNA - laboratorio.lan = 172.16.100.4/24
+
+============================================================
+
+iniciando a instalaçao do gateway
+Obs: Se nao der certo as redes, deixe ativa somente a NAT.
+apos instalaçao
+
+Logando:
+entra com o usuario padrao
+Digite: sudo bash
+
+configurando a rede ou ips
+ 
+Digite: cd /etc/netplan e depois: ls
+depois: ls mostrara o 00-installer-config.yaml ... dele nos copiaremos e configuraremos o ip das redes
+
+INSTALAÇAO DA REDE NO Gateway:
+
+Digite: cp 00-installer-config.yaml lan.yaml
+
+O arquico abaixo nao se meche ... e a configuraçao padrao: o gateway recebe por esta rede a internet que vem pelo NAT
+
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    enp0s3:
+      dhcp4: true
+  version: 2
+*saia do arquivo sem salvar! 
+
+Digite: cp 00-installer-config.yaml lan.yaml
+Digite: nano lan.yaml
+
+configuraçoes do arquivo
+
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    enp0s8:
+      addresses:
+      - 192.168.56.2/24
+  version: 2
+
+F2 e Y para Salvar!
+
+============================================================
+
+INSTALAÇAO DA REDE NO DNS1:
+
+Logando:
+entra com o usuario padrao
+Digite: sudo bash
+
+trocar nome de hosts e hostname para dns1:
+nano /etc/hostname
+nano /etc/hosts
+
+Digite: cd /etc/netplan e depois: ls para ver os arquivos
+
+Digite: nano 00-installer-config.yaml
+Este arquivo deve estar todo comentado pois usaremos o lan.yaml para o ip
+
+
+Digite: nano lan.yaml
+configuraçoes do arquivo
+ca
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    enp0s3:
+      addresses:
+      - 172.16.100.1/24
+      gateway4: 172.16.100.1
+  version: 2
+
+
+F2 e Y para Salvar!
+
+
+
+Digite: netplan apply (para aplicar as configs de rede) 
+
+OBS: dentro da pasta /etc/netplan 
+deve ter somente o arquivo 00-installer-conf.yaml (todo comentado) 
+e o lan.yaml (com as configuraçoes da rede interna acima)
+
+============================================================
+
+INSTALAÇAO DA REDE NO DNS2:
+
+Logando:
+entra com o usuario padrao
+Digite: sudo bash
+
+trocar nome de hosts e hostname para dns2:
+nano /etc/hostname
+nano /etc/hosts
+
+Digite: cd /etc/netplan e depois: ls para ver os arquivos
+
+Digite: nano 00-installer-config.yaml
+Este arquivo deve estar todo comentado pois usaremos o lan.yaml para o ip
+
+f2 e y para salvar
+
+Digite: nano lan.yaml
+
+Digite: netplan apply (para aplicar as configs de rede) 
+
+configuraçoes do arquivo
+
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    enp0s3:
+      addresses:
+      - 172.16.100.3/24
+      gateway4: 172.16.100.1
+  version: 2
+
+F2 e Y para Salvar!
+
+Digite: netplan apply (para aplicar as configs de rede) 
+
+OBS: dentro da pasta /etc/netplan 
+deve ter somente o arquivo 00-installer-conf.yaml (todo comentado) 
+e o lan.yaml (com as configuraçoes da rede interna acima)
+
+============================================================
+
+INSTALAÇAO DA REDE NO WEB:
+
+Logando:
+entra com o usuario padrao
+Digite: sudo bash
+
+trocar nome de hosts e hostname para web:
+nano /etc/hostname
+nano /etc/hosts
+
+Digite: cd /etc/netplan e depois: ls para ver os arquivos
+
+Digite: nano 00-installer-config.yaml
+Este arquivo deve estar todo comentado pois usaremos o lan.yaml para o ip
+
+f2 e y para salvar
+
+Digite: nano lan.yaml
+
+Digite: netplan apply (para aplicar as configs de rede) 
+
+configuraçoes do arquivo
+
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    enp0s3:
+      addresses:
+      - 172.16.100.4/24
+      gateway4: 172.16.100.1
+  version: 2
+
+F2 e Y para Salvar!
+
+Digite: netplan apply (para aplicar as configs de rede) 
+
+OBS: dentro da pasta /etc/netplan 
+deve ter somente o arquivo 00-installer-conf.yaml (todo comentado) 
+e o lan.yaml (com as configuraçoes da rede interna acima)
+
+=========================================================================
+
+
+
+

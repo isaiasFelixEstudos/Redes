@@ -1,0 +1,122 @@
+CRIAÇAO SERVIDOR FTP E INTEGRAÇAO SERVIÇO
+
+MAQUINA TEM QUE ESTA EM REDE INTERNA
+
+tail -f /var/log/syslog
+
+1 - CLONAR MAQUINA DNS 1 (NOME=ARQUIVO)
+
+sudo bash
+nano /etc/hostname
+nano etc/hosts  ---> 172.16.100.5    arq.laboratorio.lan arq    127.0.0.1 localhost
+
+
+cd /etc/netplan
+nano rede.yaml
+network:
+  ethernets:
+    enp0s3:
+      addresses:
+       - 172,16.100.5/24
+      gateway4: 172.16.100.1
+  version: 2
+
+
+apos isso reiniciar a maquina: REBOOT
+
+cd /etc/
+nano resolv.conf
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+
+
+CASO TENHA CLONADO DNS: sudo apt autoremove bind9
+
+sudo apt update
+apt install proftpd -y
+cat /srv/ftp/welcome.msg ----- pode personalizar as mensagens para editar nano
+cd /etc/proftpd/ ------> ls para ver o que tem dentro
+cp proftpd.conf proftpd.conf.old
+service proftpd restart
+service proftpd status ---- vai dá erro, sem siguer ter mechido
+nano proftpd.conf ---- DESCOMENTA A DEFAULT ROOT (identLook ups-comenta)
+service proftpd start
+service proftpd status ----- caso esteja ativa . pode prosseguir abaixo
+ss -ntpl ---- aparecer porta 21
+
+
+PARA TESTAR NA MÁQUINA COM O FTP
+
+cd /etc/var/log/proftpd ----- ls --- deve aparece somemte dois tipos de log quando fizer conexão aparecerá um novo
+
+
+
+
+DENTRO DO GATEWAY ---
+ftp
+open(to) 172.16.100.5
+
+
+
+
+
+
+NFS 
+apt install nfs-kernel-server
+cd /etc ---> ls
+
+exportar diretotio
+nano /etc/exports
+/home/vshoaba 172.16.100.0/24(rw,sync,no_subtree_check) no_root_squash
+systemctl restart nfs-kernel-server
+systemctl status nfs-kernel-server
+
+
+
+MAPEAMENTO PELO GATEWAY
+
+sudo apt update
+apt install nfs-common
+mkdir nfs ---- cria diretorio
+sudo mount nfs 172.16.100.5:/home/vschoaba /home/vschoaba/nfs/ ---- monta diretorio
+cd /nfs ----- ls para ver o que tem
+sudo mount -t nfs 172.16.100.5:/home/vschoaba /home/vschoaba/nfs/ ---- monta diretorio
+cd nfs
+
+
+sudo nano cd /etc/fstab
+172.16.100.5:/home/vshoaba	/home/vschoaba/nfs	nfs	dedfauts 0	0
+reboot
+
+
+
+
+
+NO NAT ----
+
+PARA FTP 
+
+iptables -t nat -A PREROUTING -p tcp -s $NET -d $SSH --dport 55000 -j DNAT --to $STORAGE:22
+iptables -A FORWARD -p tcp -s $NET -d $STORAGE --dport 22 -j ACCEPT
+iptables -A FORWARD -p tcp -s $STORAGE --sport 22 -d $NET -j ACCEPT
+
+para web
+
+for FTP in 80 443
+    do 
+iptables -t nat -A PREROUTING -p tcp -s $NET -d $LINK1 --dport $WWW -j DNAT --to-destination $WEB:$WWW
+iptables -A FORWARD -p tcp -s $NET -d $WEB --dport $WWW -j ACCEPT
+iptables -A FORWARD -p tcp -s $WEB -d $NET --sport $WWW -j ACCEPT
+
+done
+
+Redirecionamento para FTP
+
+for FTP in 20 21
+    do 
+        iptables -t nat -A PREROUTING -p tcp -s $NET -d $LINK1 --dport $FTP -j DNAT --to $STORAGE:$FTP
+        iptables -A nat -A FORWARD -p tcp -s $NET -d $STORAGE --dport $FTP -j ACCEPT
+        iptables -A nat -A FORWARD -p tcp -s $WEB -d $NET --sport $FTP -j ACCEPT
+
+
+

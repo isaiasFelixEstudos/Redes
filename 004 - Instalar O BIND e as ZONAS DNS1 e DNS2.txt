@@ -1,0 +1,226 @@
+﻿INTALAR O BIND e as ZONAS DNS1 e DNS2
+sudo bash
+apt update
+apt install bind9
+
+CRIAÇÃO DE ZONAS - DNS 1
+
+Entra na pasta do Bind
+cd /etc/bind
+
+nano named.conf.local
+
+coloca as seguintes configuraçoes
+
+
+zone "laboratorio.lan" {
+        type master;
+        file "/etc/bind/laboratorio.db";
+        allow-transfer { 172.16.100.3; };
+};
+
+zone "100.16.172.in-addr.arpa" {
+        type master; file "/etc/bind/laboratorio.rev";
+        allow-transfer { 172.16.100.3; };
+};
+
+
+
+F2 + Y para salvar
+
+============================================================================
+criando o laboratorio.db
+cp db.local laboratorio.db -- para nãp criar arquivo todo
+nano laboratorio.db
+
+Dentro do arquivo deve ter as seguintes informaçoes:
+
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     dns1.laboratorio.lan. root.laboratorio.lan. (
+                              4         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+
+;
+@       IN      NS      dns1.laboratorio.lan.
+@       IN      A       172.16.100.2
+@       IN      A       172.16.100.3
+
+dns1    IN      A       172.16.100.2
+dns2    IN      A       172.16.100.3
+dns     IN      CNAME   dns1.laboratorio.lan.
+gateway IN      A       172.16.100.1
+
+
+
+F2 y para salvar
+
+verificar!!! no dns1
+/etc/resolv.conf
+
+nameserver 172.16.100.2
+nameserver 172.16.100.3
+domain laboratorio.lan
+search laboratorio.lan
+
+===================================================
+criando o laboratorio.rev
+
+cp db.127 laboratorio.rev
+
+nano laboratorio.rev
+
+Dentro do arquivo deve ter as seguintes informaçoes:
+
+;
+; BIND reverse data file for local loopback interface
+;
+@       IN      SOA     dns1.laboratorio.lan. root.laboratorio.lan. (
+                              3         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      dns1.laboratorio.lan.
+2       IN      PTR     dns1.laboratorio.lan.
+1       IN      PTR     gateway.laboratorio.lan.
+3       IN      PTR     dns2.laboratorio.lan.
+
+
+
+f2+y para salvar
+
+==========================================================================
+altera:
+
+nano named.conf.options
+
+obs: edita em forwarders e embaixo
+
+options {
+        directory "/var/cache/bind";
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+        // If your ISP provided one or more IP addresses for stable
+        // nameservers, you probably want to use them as forwarders.
+        // Uncomment the following block, and insert the addresses replacing
+        // the all-0's placeholder.
+
+        forwarders {
+               8.8.8.8;
+               8.8.4.4;
+               1.1.1.1;
+        };
+
+        //=====================================================================>
+        // If BIND logs error messages about the root key being expired,
+        // you will need to update your keys.  See https://www.isc.org/bind-keys
+        //=====================================================================>
+#       dnssec-validation auto;
+        notify yes;
+        also-notify { 172.16.100.3; };
+        listen-on-v6 { any; };
+};
+
+
+
+f2 e y para salvar
+
+===================================================================================
+verificar o named:
+
+named-checkconf named.conf.local - se tiver correto não volta nada
+named-ckeckzone laboratorio.lan lab.db
+
+Restart bind:
+
+systemctl restart bind9
+systemctl status bind9
+
+restart named:
+
+systemctl restart named e named status
+
+Pingar pra testar:
+
+ping laboratorio.lan
+==========================================================================
+
+DNS2 BIND9 E ZONAS
+
+sudo bash
+apt update
+apt-get install bind9 
+se der erro ---(apt-get install bind9 bind9utils bind9-doc)
+
+cd /etc/bind
+ls (listar)
+
+alterar o named.conf.local:
+
+nano named.conf.local
+
+coloca as seguintes configuraçoes (ou so altera)
+
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+zone "laboratorio.lan" {
+        type slave;
+        file "/etc/bind/laboratorio.db";
+        masters { 172.16.100.2; };
+};
+
+zone "100.16.172.in-addr.arpa" {
+        type slave;
+        file "/etc/bind/laboratorio.rev";
+        masters { 172.16.100.2; };
+};
+
+
+
+
+
+
+============================================================================
+
+ADICIONAIS EM CASO DE ERROS
+
+Resolv (quando nao conecta)
+
+sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
+echo nameserver 8.8.8.8 > etc/resolv.conf
+
+
+nano /etc/resolv.conf 
+
+search laboratorio.lan
+nameserver 172.16.100.2
+nameserver 172.16.100.3
+search laboratorio.lan
+
+
+
+Obs: faz backup do reslv (ele pode estar na cor azul claro (normalmente da erro))
+e cria o resolv e deleta o original e depois cria a partir do backup!
+
+
+
+
+
+
+

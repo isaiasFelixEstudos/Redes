@@ -34,55 +34,56 @@ Classe IP: B
 - Rede 1
   - Endereço: 192.168.56.2
   - Endereço: 192.168.56.3
-```
+
 login: isaias
 senha: ifro
-
+```shell
 su (senha: ifro)
-
 ip address
-
+```
+```shell
 nano /etc/systemd/network/enp0s3.network
+```
 [Match]
 Name=enp0s3
 
 [Network]
 DHCP=yes
-
+```shell
 nano /etc/systemd/network/enp0s8.network
+```
 [Match]
 Name=enp0s8
 
 [Network]
 Address=172.16.1.1/24
-
+```shell
 nano /etc/systemd/network/enp0s9.network
+```
 [Match]
 Name=enp0s9
 
 [Network]
 Address=192.168.56.2/24
 Address=192.168.56.3/24
-
+```shell
 ip address
-
 systemctl status systemd-networkd.service
-
 systemctl restart systemd-networkd.service
-
 systemctl status systemd-networkd.service
-
 ip address
-
+```
 - (Observação: O restart fica com falha mas quando damos ip address o IP está lá)
-
+```shell
 nano /etc/resolv.conf
+```
 domain prova.lan
 search prova.lan
 nameserver 172.16.1.2
 nameserver 172.16.1.3
-
+```shell
 nano /home/isaias/nat.sh
+```
 #!/bin/bash
 
 REDE=172.16.1.0/24

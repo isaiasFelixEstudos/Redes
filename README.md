@@ -1,18 +1,14 @@
-# Serviço de Redes - 1
-<h3>Prova</h3>
-<hr>
-# CONFIGURAÇÕES PADRÃO PARA ATIVIDADE<br/>
-<pre>
-NAT = local
-LAN = HostOnly = 192.168.56.2/24
-LAN2 = REDE INTERNA - prova.lan = 172.16.1.0/24 (Alias = prova)
+## Configurações Padrão para Atividade
 
+- NAT: local
+- LAN: HostOnly = 192.168.56.2/24
+- LAN2: REDE INTERNA - prova.lan = 172.16.1.0/24 (Alias = prova)
 
-GW      = REDE INTERNA - prova.lan = 172.16.1.1/24
-DNS1    = REDE INTERNA - prova.lan = 172.16.1.2/24
-DNS2    = REDE INTERNA - prova.lan = 172.16.1.3/24
-WEB     = REDE INTERNA - prova.lan = 172.16.1.4/24
-STORAGE = REDE INTERNA - prova.lan = 172.16.1.5/24
+- GW: REDE INTERNA - prova.lan = 172.16.1.1/24
+- DNS1: REDE INTERNA - prova.lan = 172.16.1.2/24
+- DNS2: REDE INTERNA - prova.lan = 172.16.1.3/24
+- WEB: REDE INTERNA - prova.lan = 172.16.1.4/24
+- STORAGE: REDE INTERNA - prova.lan = 172.16.1.5/24
 
 DNS1 52000;
 DNS2 53000;
@@ -20,114 +16,123 @@ WEB 54000;
 STORAGE 55000;
 
 iface eth0 inet static
-	address 172.16.1.0
-	netmask 255.255.255.0 
-	network 172.16.1.0
-	broadcast 172.16.1.255
+   address 172.16.1.0
+   netmask 255.255.255.0 
+   network 172.16.1.0
+   broadcast 172.16.1.255
 
-Quantidade de rede
-	256
-Quantidade de host por rede/sub-rede
-	254
-Classe IP
-	B
-  </pre>
-<hr>
-# GATEWAY<br/>
-<pre>
-rede 1
-endereço: nat
-rede 1
-endereço:172.16.1.1
-rede 1
-endereço:192.168.56.2
-endereço:192.168.56.3
+Quantidade de rede: 256
+Quantidade de host por rede/sub-rede: 254
+Classe IP: B
 
-COMANDOS - INICIO
+### GATEWAY
+
+- Rede 1
+  - Endereço: nat
+- Rede 1
+  - Endereço: 172.16.1.1
+- Rede 1
+  - Endereço: 192.168.56.2
+  - Endereço: 192.168.56.3
+
+#### COMANDOS - INICIO
+
 login: isaias
 senha: ifro
+
 su (senha: ifro)
+
 ip address
+
 nano /etc/systemd/network/enp0s3.network
-	[Match]
-	Name=enp0s3
-	
-	[Network]
-	DHCP=yes
+[Match]
+Name=enp0s3
+
+[Network]
+DHCP=yes
+
 nano /etc/systemd/network/enp0s8.network
-	[Match]
-	Name=enp0s8
+[Match]
+Name=enp0s8
 
-	[Network]
-	Address=172.16.1.1/24
+[Network]
+Address=172.16.1.1/24
+
 nano /etc/systemd/network/enp0s9.network
-	[Match]
-	Name=enp0s9
+[Match]
+Name=enp0s9
 
-	[Network]
-	Address=192.168.56.2/24
-	Address=192.168.56.3/24
+[Network]
+Address=192.168.56.2/24
+Address=192.168.56.3/24
+
 ip address
+
 systemctl status systemd-networkd.service
+
 systemctl restart systemd-networkd.service
+
 systemctl status systemd-networkd.service
+
 ip address
-	-	(Observação: O restart fica com falha mas quando damos ip address o ip ta lá)
+
+- (Observação: O restart fica com falha mas quando damos ip address o IP está lá)
+
 nano /etc/resolv.conf
-	domain prova.lan
-	search prova.lan
-	nameserver 172.16.1.2
-	nameserver 172.16.1.3
+domain prova.lan
+search prova.lan
+nameserver 172.16.1.2
+nameserver 172.16.1.3
+
 nano /home/isaias/nat.sh
-	#!/bin/bash
+#!/bin/bash
 
-	REDE=172.16.1.0/24
-	HOST=192.168.56.1
-	GW1=192.168.56.2
-	GW2=192.168.56.3
-	
-	echo "1" > /proc/sys/net/ipv4/ip_forward
-	iptables -t nat -A POSTROUTING -s $REDE -j MASQUERADE	
+REDE=172.16.1.0/24
+HOST=192.168.56.1
+GW1=192.168.56.2
+GW2=192.168.56.3
 
-COMANDOS - FIM
- </pre>
-<hr>
-# DNS 1<br/>
-<pre>
-endereço: 172.16.1.2
-marcara: 255.255.255.0
-porta: 52000
+echo "1" > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A POSTROUTING -s $REDE -j MASQUERADE
 
-COMANDOS - INICIO
-COMANDOS - FIM
-</pre>
-<hr>
-# DNS 2<br/>
-<pre>
-endereço: 172.16.1.3
-marcara: 255.255.255.0
-porta: 53000
+#### COMANDOS - FIM
 
-COMANDOS - INICIO
-COMANDOS - FIM
-</pre>
-<hr>
-# WEB<br/>
-<pre>
-endereço: 172.16.1.4
-marcara: 255.255.255.0
-porta: 54000
+### DNS 1
 
-COMANDOS - INICIO
-COMANDOS - FIM
-</pre>
-<hr>
-# STORAGE<br/>
-<pre>
-endereço: 172.16.1.5
-marcara: 255.255.255.0
-porta: 55000
+- Endereço: 172.16.1.2
+- Máscara: 255.255.255.0
+- Porta: 52000
 
-COMANDOS - INICIO
-COMANDOS - FIM
-</pre>
+#### COMANDOS - INICIO
+
+#### COMANDOS - FIM
+
+### DNS 2
+
+- Endereço: 172.16.1.3
+- Máscara: 255.255.255.0
+- Porta: 53000
+
+#### COMANDOS - INICIO
+
+#### COMANDOS - FIM
+
+### WEB
+
+- Endereço: 172.16.1.4
+- Máscara: 255.255.255.0
+- Porta: 54000
+
+#### COMANDOS - INICIO
+
+#### COMANDOS - FIM
+
+### STORAGE
+
+- Endereço: 172.16.1.5
+- Máscara: 255.255.255.0
+- Porta: 55000
+
+#### COMANDOS - INICIO
+
+#### COMANDOS - FIM

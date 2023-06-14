@@ -42,12 +42,13 @@ ip address
 ```
 ```shell
 nano /etc/systemd/network/enp0s3.network
-
+<script>
 [Match]
 Name=enp0s3
 
 [Network]
 DHCP=yes
+</script>
 ```
 ```shell
 nano /etc/systemd/network/enp0s8.network

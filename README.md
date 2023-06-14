@@ -1,14 +1,14 @@
 ## Configurações Padrão para Atividade
 ```
-- NAT: local
-- LAN: HostOnly = 192.168.56.2/24
-- LAN2: REDE INTERNA - prova.lan = 172.16.1.0/24 (Alias = prova)
+NAT: local
+LAN: HostOnly = 192.168.56.2/24
+LAN2: REDE INTERNA - prova.lan = 172.16.1.0/24 (Alias = prova)
 
-- GW: REDE INTERNA - prova.lan = 172.16.1.1/24
-- DNS1: REDE INTERNA - prova.lan = 172.16.1.2/24
-- DNS2: REDE INTERNA - prova.lan = 172.16.1.3/24
-- WEB: REDE INTERNA - prova.lan = 172.16.1.4/24
-- STORAGE: REDE INTERNA - prova.lan = 172.16.1.5/24
+GW: REDE INTERNA - prova.lan = 172.16.1.1/24
+DNS1: REDE INTERNA - prova.lan = 172.16.1.2/24
+DNS2: REDE INTERNA - prova.lan = 172.16.1.3/24
+WEB: REDE INTERNA - prova.lan = 172.16.1.4/24
+STORAGE: REDE INTERNA - prova.lan = 172.16.1.5/24
 
 DNS1 52000;
 DNS2 53000;
@@ -34,9 +34,7 @@ Classe IP: B
 - Rede 1
   - Endereço: 192.168.56.2
   - Endereço: 192.168.56.3
-
-#### COMANDOS - INICIO
-
+```
 login: isaias
 senha: ifro
 
@@ -94,9 +92,7 @@ GW2=192.168.56.3
 
 echo "1" > /proc/sys/net/ipv4/ip_forward
 iptables -t nat -A POSTROUTING -s $REDE -j MASQUERADE
-
-#### COMANDOS - FIM
-
+```
 ### DNS 1
 
 - Endereço: 172.16.1.2

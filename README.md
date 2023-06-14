@@ -26,7 +26,6 @@ Quantidade de host por rede/sub-rede: 254
 Classe IP: B
 ```
 ### GATEWAY
-
 - Rede 1
   - Endereço: nat
 - Rede 1
@@ -34,38 +33,41 @@ Classe IP: B
 - Rede 1
   - Endereço: 192.168.56.2
   - Endereço: 192.168.56.3
-
+```shell
 login: isaias
 senha: ifro
-```shell
-su (senha: ifro)
+su 
+senha
 ip address
 ```
 ```shell
 nano /etc/systemd/network/enp0s3.network
-```
+
 [Match]
 Name=enp0s3
 
 [Network]
 DHCP=yes
+```
 ```shell
 nano /etc/systemd/network/enp0s8.network
-```
+
 [Match]
 Name=enp0s8
 
 [Network]
 Address=172.16.1.1/24
+```
 ```shell
 nano /etc/systemd/network/enp0s9.network
-```
+
 [Match]
 Name=enp0s9
 
 [Network]
 Address=192.168.56.2/24
 Address=192.168.56.3/24
+```
 ```shell
 ip address
 systemctl status systemd-networkd.service
@@ -76,21 +78,18 @@ ip address
 - (Observação: O restart fica com falha mas quando damos ip address o IP está lá)
 ```shell
 nano /etc/resolv.conf
-```
 domain prova.lan
 search prova.lan
 nameserver 172.16.1.2
 nameserver 172.16.1.3
+```
 ```shell
 nano /home/isaias/nat.sh
-```
 #!/bin/bash
-
 REDE=172.16.1.0/24
 HOST=192.168.56.1
 GW1=192.168.56.2
 GW2=192.168.56.3
-
 echo "1" > /proc/sys/net/ipv4/ip_forward
 iptables -t nat -A POSTROUTING -s $REDE -j MASQUERADE
 ```
@@ -100,7 +99,8 @@ iptables -t nat -A POSTROUTING -s $REDE -j MASQUERADE
 - Máscara: 255.255.255.0
 - Porta: 52000
 
-#### COMANDOS - INICIO
+```shell
+```
 
 #### COMANDOS - FIM
 
@@ -110,9 +110,8 @@ iptables -t nat -A POSTROUTING -s $REDE -j MASQUERADE
 - Máscara: 255.255.255.0
 - Porta: 53000
 
-#### COMANDOS - INICIO
-
-#### COMANDOS - FIM
+```shell
+```
 
 ### WEB
 
@@ -120,9 +119,8 @@ iptables -t nat -A POSTROUTING -s $REDE -j MASQUERADE
 - Máscara: 255.255.255.0
 - Porta: 54000
 
-#### COMANDOS - INICIO
-
-#### COMANDOS - FIM
+```shell
+```
 
 ### STORAGE
 
@@ -130,6 +128,5 @@ iptables -t nat -A POSTROUTING -s $REDE -j MASQUERADE
 - Máscara: 255.255.255.0
 - Porta: 55000
 
-#### COMANDOS - INICIO
-
-#### COMANDOS - FIM
+```shell
+```

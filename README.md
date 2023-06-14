@@ -1,7 +1,7 @@
 # Serviço de Redes - 1
 <h3>Prova</h3>
 <hr>
-# CONFIGURAÇÕES PADRÃO PARA ATIVIDADE
+# CONFIGURAÇÕES PADRÃO PARA ATIVIDADE<br/>
 	NAT = local
 	LAN = HostOnly = 192.168.56.2/24
 	LAN2 = REDE INTERNA - prova.lan = 172.16.1.0/24 (Alias = prova)
@@ -30,7 +30,7 @@
 	Classe IP
 		B
 <hr>
-# GATEWAY	
+# GATEWAY<br/>	
 	rede 1
 	endereço: nat
 	rede 1
@@ -87,7 +87,7 @@
 	
 	COMANDOS - FIM
 <hr>
-# DNS 1
+# DNS 1<br/>
 	endereço: 172.16.1.2
 	marcara: 255.255.255.0
 	porta: 52000
@@ -95,7 +95,7 @@
 	COMANDOS - INICIO
 	COMANDOS - FIM
 <hr>
-# DNS 2
+# DNS 2<br/>
 	endereço: 172.16.1.3
 	marcara: 255.255.255.0
 	porta: 53000
@@ -103,7 +103,7 @@
 	COMANDOS - INICIO
 	COMANDOS - FIM
 <hr>
-# WEB
+# WEB<br/>
 	endereço: 172.16.1.4
 	marcara: 255.255.255.0
 	porta: 54000
@@ -111,7 +111,7 @@
 	COMANDOS - INICIO
 	COMANDOS - FIM
 <hr>
-# STORAGE
+# STORAGE<br/>
 	endereço: 172.16.1.5
 	marcara: 255.255.255.0
 	porta: 55000

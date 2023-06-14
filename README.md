@@ -1,5 +1,5 @@
 ## Configurações Padrão para Atividade
-
+```
 - NAT: local
 - LAN: HostOnly = 192.168.56.2/24
 - LAN2: REDE INTERNA - prova.lan = 172.16.1.0/24 (Alias = prova)
@@ -24,7 +24,7 @@ iface eth0 inet static
 Quantidade de rede: 256
 Quantidade de host por rede/sub-rede: 254
 Classe IP: B
-
+```
 ### GATEWAY
 
 - Rede 1

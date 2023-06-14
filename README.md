@@ -7,6 +7,7 @@ NAT = local
 LAN = HostOnly = 192.168.56.2/24
 LAN2 = REDE INTERNA - prova.lan = 172.16.1.0/24 (Alias = prova)
 
+
 GW      = REDE INTERNA - prova.lan = 172.16.1.1/24
 DNS1    = REDE INTERNA - prova.lan = 172.16.1.2/24
 DNS2    = REDE INTERNA - prova.lan = 172.16.1.3/24
@@ -102,25 +103,31 @@ COMANDOS - FIM
 </pre>
 <hr>
 # DNS 2<br/>
-	endereço: 172.16.1.3
-	marcara: 255.255.255.0
-	porta: 53000
-	
-	COMANDOS - INICIO
-	COMANDOS - FIM
+<pre>
+endereço: 172.16.1.3
+marcara: 255.255.255.0
+porta: 53000
+
+COMANDOS - INICIO
+COMANDOS - FIM
+</pre>
 <hr>
 # WEB<br/>
-	endereço: 172.16.1.4
-	marcara: 255.255.255.0
-	porta: 54000
-	
-	COMANDOS - INICIO
-	COMANDOS - FIM
+<pre>
+endereço: 172.16.1.4
+marcara: 255.255.255.0
+porta: 54000
+
+COMANDOS - INICIO
+COMANDOS - FIM
+</pre>
 <hr>
 # STORAGE<br/>
-	endereço: 172.16.1.5
-	marcara: 255.255.255.0
-	porta: 55000
-	
-	COMANDOS - INICIO
-	COMANDOS - FIM
+<pre>
+endereço: 172.16.1.5
+marcara: 255.255.255.0
+porta: 55000
+
+COMANDOS - INICIO
+COMANDOS - FIM
+</pre>

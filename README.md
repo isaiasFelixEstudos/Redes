@@ -2,6 +2,7 @@
 <h3>Prova</h3>
 <hr>
 # CONFIGURAÇÕES PADRÃO PARA ATIVIDADE<br/>
+<pre>
 	NAT = local
 	LAN = HostOnly = 192.168.56.2/24
 	LAN2 = REDE INTERNA - prova.lan = 172.16.1.0/24 (Alias = prova)
@@ -29,6 +30,7 @@
 		254
 	Classe IP
 		B
+  </pre>
 <hr>
 # GATEWAY<br/>	
 	rede 1
